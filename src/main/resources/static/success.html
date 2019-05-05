@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="/static/jquery.min.js"></script>
+</head>
+<body>
+<div id="message"></div>
+<input type="button" id="signout" value="Signout"/>
+</body>
+
+<script>
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+
+$("#signout").click(function() {
+  localStorage.removeItem("token");
+  window.location.href = "/static/login.html";
+});
+
+$(document).ready(function() {
+
+  var token = null;
+
+  if (getUrlParameter("token")) {
+    token = getUrlParameter("token");
+    localStorage.setItem("token", token);
+  }
+
+  if (localStorage.getItem("token")) {
+    token = localStorage.getItem("token");
+  }
+  else {
+    window.location.href = "/static/login.html";
+  }
+
+  $.ajax({
+        type: "GET",
+        url: "http://localhost:7000/api/hello",
+        beforeSend: function(request) {
+          request.setRequestHeader("Authorization", "Bearer " + token);
+        },
+        success: function (response) {
+            $("#message").html(response);
+        },
+        error: function(response) {
+            console.log(response);
+            alert("Error");
+        }
+    });
+});
+</script>
+</html>

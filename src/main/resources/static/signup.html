@@ -1,0 +1,47 @@
+<script src="/static/jquery.min.js"></script>
+
+<div>
+    <div>
+        <h1>Signup</h1>
+        <form>
+            <div>
+                <input type="text" id="name" name="name" placeholder="Name" required/>
+            </div>
+            <div>
+                <input type="email" id="email" name="email" placeholder="Email" required/>
+            </div>
+            <div>
+                <input type="password" id="password" name="password" placeholder="Password" required/>
+            </div>
+            <div>
+                <button type="button" onclick="handleSubmit()">Sign Up</button>
+            </div>
+        </form>
+        <span>Already have an account ? <a href="/static/login.html">Login!</a></span>
+    </div>
+</div>
+
+<script>
+function handleSubmit() {
+
+    let data = {
+        "name" : $("#name").val(),
+        "email" : $("#email").val(),
+        "password" : $("#password").val(),
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:7000/auth/signup",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function () {
+            window.location.href = "/static/login.html";
+        },
+        error: function(response) {
+            console.log(response);
+            alert("Error");
+        }
+    });
+}
+</script>

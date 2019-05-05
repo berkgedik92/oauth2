@@ -1,0 +1,55 @@
+<script src="/static/jquery.min.js"></script>
+
+<div>
+  <div>
+    <h1>Login</h1>
+    <div>
+      <a href="http://localhost:7000/oauth2/authorize/google?redirect_uri=main">Log in with Google</a><br>
+      <a href="http://localhost:7000/oauth2/authorize/facebook?redirect_uri=main">Log in with Facebook</a>
+    </div>
+    <div>OR</div>
+    <form>
+      <div>
+        <input type="email" id="email" name="email" placeholder="Email" required/>
+      </div>
+      <div>
+        <input type="password" id="password" name="password" placeholder="Password" required/>
+      </div>
+      <div>
+        <button type="button" onclick="handleSubmit()">Login</button>
+      </div>
+    </form>
+    <span> New user? <a href="/static/signup.html">Sign up!</a></span>
+  </div>
+</div>
+
+
+<script>
+
+if (localStorage.getItem("token")) {
+  window.location.href = "/static/success.html";
+}
+
+function handleSubmit() {
+
+    let data = {
+        "email" : $("#email").val(),
+        "password" : $("#password").val(),
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:7000/auth/login",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        success: function (response) {
+          localStorage.setItem("token", response["accessToken"]);
+          window.location.href = "/static/success.html";
+        },
+        error: function(response) {
+            console.log(response);
+            alert("Error");
+        }
+    });
+}
+</script>
